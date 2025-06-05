@@ -15,7 +15,7 @@ function GoogleLogin() {
         login();
     };
 
-    // Use the useGoogleLogin hook to handle the login process
+    // Use the useGoogleLogin hook to handle the login process`
     const googleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: responseGoogle,
