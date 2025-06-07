@@ -1,29 +1,37 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Logo from "../assets/Img/Logo.png"; 
+import SearchBar from "./Searchbar";
+
+
 
 function Navbar() {
   return (
-    <header className="bg-red shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="shadow-sm bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-t-lg">
+      <div className="max-w-1xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="text-2xl font-bold text-blue-900">EduSolver</div>
-          <nav className="hidden md:flex space-x-8">
-            <Link to="/"className="text-blue-900 hover:bg-blue-200 transition-colors px-4 py-2 rounded">
+          
+          {/* Logo and Title */}
+          <div className="flex items-center space-x-2">
+            <img src={Logo} alt="EduSolver Logo" className="w-10 h-10 object-contain" />
+            <span className="text-2xl font-bold text-white">EduSolver</span>
+          </div>
+          
+          {/* Navigation Links */}
+          <nav className="hidden md:flex space-x-6">
+            <Link to="/" className="text-white hover:bg-blue-100 px-4 py-2 rounded transition-colors duration-200">
               Home
             </Link>
-
-            <Link to="/about" className="text-blue-900 hover:bg-blue-200 transition-colors px-4 py-2 rounded">
+            <Link to="/about" className="text-white hover:bg-blue-500 px-4 py-2 rounded transition-colors duration-200">
               About
             </Link>
-
-            <Link to="/services" className="text-blue-900 hover:bg-blue-200 transition-colors px-4 py-2 rounded">
+            <Link to="/services" className="text-white hover:bg-blue-500 px-4 py-2 rounded transition-colors duration-200">
               Services
             </Link>
-
-            <Link to="/contact" className="text-blue-900 hover:bg-blue-200 transition-colors px-4 py-2 rounded">
+            <Link to="/contact" className="text-white hover:bg-blue-500 px-4 py-2 rounded transition-colors duration-200">
               Contact
             </Link>
-            <link rel="stylesheet" href="" />
+            <SearchBar/>
           </nav>
         </div>
       </div>
