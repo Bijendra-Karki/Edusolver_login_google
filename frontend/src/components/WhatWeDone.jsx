@@ -10,10 +10,11 @@ export function WhatWeDone() {
     <section className="bg-blue-900 text-white py-24">
       <div className="container mx-auto px-4">
         <div className="text-center mb-20">
-          <h2 className="text-5xl font-bold mb-6">What We Done?</h2>
+          <h2 className="text-5xl font-bold mb-6">What We've Accomplished</h2>
           <p className="text-gray-300 text-xl max-w-2xl mx-auto leading-relaxed">
-            We're here to help you to finding a best way to achieve your goals and transform your business
+            At EduSolver, we’re committed to helping you discover the best path to reach your goals and elevate your educational journey.
           </p>
+
         </div>
 
         {/* Statistics */}

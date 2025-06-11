@@ -6,20 +6,18 @@ export function CTASection() {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Future?</h2>
+            <h2 className="text-4xl font-bold mb-6">Empower Your Learning Journey with EduSolver</h2>
             <p className="text-orange-100 text-xl mb-8 leading-relaxed">
-              Take the first step towards achieving your goals. Our expert advisors are ready to guide you through every
-              challenge and opportunity that lies ahead.
+              Unlock your academic potential with personalized guidance and support. Whether you're a student or an educator, EduSolver is here to make learning smarter and more effective.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center group">
-                Get Started Today
+                Join EduSolver Now
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
               </button>
               <button className="border-2 border-white  bg-whtext-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-colors duration-200">
-                Schedule Consultation
+                Talk to a Mentor
               </button>
-
             </div>
           </div>
           <div className="space-y-6">
@@ -28,8 +26,8 @@ export function CTASection() {
                 <Phone className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-semibold">Call Us Today</p>
-                <p className="text-orange-100">9812855741</p>
+                <p className="font-semibold">Connect by Phone</p>
+                <p className="text-orange-100">+977-9812855741</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -37,8 +35,8 @@ export function CTASection() {
                 <Mail className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-semibold">Email Us</p>
-                <p className="text-orange-100">info@xtraadvisor.com</p>
+                <p className="font-semibold">Send an Email</p>
+                <p className="text-orange-100">edusolver@171gmail.com</p>
               </div>
             </div>
           </div>
