@@ -36,7 +36,6 @@ const Slider = () => {
         <video
           key={currentIndex}
           src={current.src}
-          controls
           autoPlay
           muted
           className="w-full h-full object-cover"

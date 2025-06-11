@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard'
 import PageNotFound from './components/PageNotFound'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import LandingPage from './components/LandingPage'
+import MainAbout from './components/MainAbout'
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
   <Route path="/" element={<LandingPage/>} /> 
   <Route path="/login" element={<GoogleAuthWrapper />} />
   <Route path="/dashboard" element={<Dashboard />} />
+  <Route path="/about" element={<MainAbout/>} />
   <Route path="*" element={<PageNotFound />} />
   </Routes>
   </BrowserRouter>

@@ -14,25 +14,25 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
-       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-  {/* Card 1 */}
-  <div className="rounded-lg shadow-lg p-8 text-center bg-gradient-to-r from-blue-500 to-blue-900 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-transform duration-300">
-    <div className="text-6xl font-bold text-white mb-2">5</div>
-    <p className="text-lg text-white">Years of Experience</p>
-  </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          {/* Card 1 */}
+          <div className="rounded-lg shadow-lg p-8 text-center bg-gradient-to-r from-blue-500 to-blue-900 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-transform duration-300">
+            <div className="text-6xl font-bold text-white mb-2">5</div>
+            <p className="text-lg text-white">Years of Experience</p>
+          </div>
 
-  {/* Card 2 */}
-  <div className="rounded-lg shadow-lg p-8 text-center bg-gradient-to-r from-blue-500 to-blue-900 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-transform duration-300">
-    <p className="text-lg mb-2 text-white">Do You Need</p>
-    <h2 className="text-2xl font-bold text-white">All In One Platform?</h2>
-  </div>
+          {/* Card 2 */}
+          <div className="rounded-lg shadow-lg p-8 text-center bg-gradient-to-r from-blue-500 to-blue-900 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-transform duration-300">
+            <p className="text-lg mb-2 text-white">Do You Need</p>
+            <h2 className="text-2xl font-bold text-white">All In One Platform?</h2>
+          </div>
 
-  {/* Card 3 */}
-  <div className="rounded-lg shadow-lg p-8 text-center bg-gradient-to-r from-blue-500 to-blue-900 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-transform duration-300">
-    <p className="text-white mb-2">Call us for free</p>
-    <div className="text-2xl font-bold text-white">9812855741</div>
-  </div>
-</div>
+          {/* Card 3 */}
+          <div className="rounded-lg shadow-lg p-8 text-center bg-gradient-to-r from-blue-500 to-blue-900 hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-transform duration-300">
+            <p className="text-white mb-2">Call us for free</p>
+            <div className="text-2xl font-bold text-white">9812855741</div>
+          </div>
+        </div>
 
         {/* About Section */}
         <section className="mb-16">

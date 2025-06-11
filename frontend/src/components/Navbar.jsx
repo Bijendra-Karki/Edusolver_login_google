@@ -4,10 +4,9 @@ import Logo from "../assets/Img/Logo.png";
 import SearchBar from "./Searchbar";
 
 
-
 function Navbar() {
   return (
-    <header className="shadow-sm bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-t-lg">
+    <header className="shadow-sm bg-gradient-to-r from-blue-600 to-blue-900 text-white rounded-t-lg">
       <div className="max-w-1xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           
@@ -19,19 +18,25 @@ function Navbar() {
           
           {/* Navigation Links */}
           <nav className="hidden md:flex space-x-6">
-            <Link to="/" className="text-white hover:bg-blue-100 px-4 py-2 rounded transition-colors duration-200">
+            <Link to="/" className="text-white hover:bg-white px-4 py-2 rounded transition-colors duration-200">
               Home
             </Link>
-            <Link to="/about" className="text-white hover:bg-blue-500 px-4 py-2 rounded transition-colors duration-200">
+            <Link to="/about" className="text-white hover:bg-white px-4 py-2 rounded transition-colors duration-200">
               About
             </Link>
-            <Link to="/services" className="text-white hover:bg-blue-500 px-4 py-2 rounded transition-colors duration-200">
+            <Link to="/services" className="text-white hover:bg-white px-4 py-2 rounded transition-colors duration-200">
               Services
             </Link>
-            <Link to="/contact" className="text-white hover:bg-blue-500 px-4 py-2 rounded transition-colors duration-200">
+            <Link to="/contact" className="text-white hover:bg-white px-4 py-2 rounded transition-colors duration-200">
               Contact
             </Link>
             <SearchBar/>
+            <Link to="/Login" className="text-white hover:bg-white px-4 py-2 rounded transition-colors duration-200">
+             Log In
+            </Link>
+
+
+
           </nav>
         </div>
       </div>
