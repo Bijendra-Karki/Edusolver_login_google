@@ -1,38 +1,40 @@
-import { useState } from 'react'
-import './App.css'
-import {BrowserRouter,Routes,Route,Navigate}from 'react-router-dom'
-import GoogleLogin from './components/GoogleLogin'
-import Dashboard from './components/Dashboard'
-import PageNotFound from './components/PageNotFound'
-import {GoogleOAuthProvider} from '@react-oauth/google'
-import LandingPage from './components/LandingPage'
-import MainAbout from './components/MainAbout'
+import "./App.css"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
+
+import PageNotFound from "./components/PageNotFound"
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google"
+import LandingPage from "./components/home/LandingPage"
+import MainAbout from "./components/about/MainAbout"
+import Service from "./components/service/Service"
+import ContactPage from "./components/Contact/ContactPage"
+import LoginPage from "./components/auth/LoginPage"
+import Dashboard from "./client/Dashboard"
+import AdminPanel from "./Admin/AdminPanel"
 
 function App() {
   const GoogleAuthWrapper = () => {
-  return (
-    <GoogleOAuthProvider clientId="314824028312-1hh17m9aatjohq75fkdp7h268a13du5m.apps.googleusercontent.com">
-      <GoogleLogin />
-    </GoogleOAuthProvider>
-  );
-};
+    return (
+      <GoogleOAuthProvider clientId="314824028312-1hh17m9aatjohq75fkdp7h268a13du5m.apps.googleusercontent.com">
+        <GoogleLogin />
+      </GoogleOAuthProvider>
+    )
+  }
 
-  
   return (
     <BrowserRouter>
-  <Routes>
-  <Route path="/" element={<LandingPage/>} /> 
-  <Route path="/login" element={<GoogleAuthWrapper />} />
-  <Route path="/dashboard" element={<Dashboard />} />
-  <Route path="/about" element={<MainAbout/>} />
-  <Route path="*" element={<PageNotFound />} />
-  </Routes>
-  </BrowserRouter>
-
-
-
-    
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/google-login" element={<GoogleAuthWrapper />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/adminPanel" element={<AdminPanel/>} />
+        <Route path="/about" element={<MainAbout />} />
+        <Route path="/service" element={<Service />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
