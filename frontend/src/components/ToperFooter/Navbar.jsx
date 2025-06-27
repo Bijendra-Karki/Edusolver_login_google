@@ -1,16 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/Img/Logo.png"; 
+// import Logo from "../../assets/Img/Logo.png"; 
 import Logo2 from "../../assets/Img/Logo2.png"; 
 
 import SearchBar from "../Searchbar";
+import Button from "../button";
+import { LogIn, LogOut } from "lucide-react";
 
 
 function Navbar() {
   return (
     <header className="shadow-sm bg-gradient-to-r from-blue-600 to-blue-900 text-white rounded-t-lg">
       <div className="max-w-1xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-4 ">
           
           {/* Logo and Title */}
           <div className="flex items-center space-x-2">
@@ -33,8 +35,8 @@ function Navbar() {
               Contact
             </Link>
             <SearchBar/>
-            <Link to="/login" className="text-white hover:bg-white px-4 py-2 rounded transition-colors duration-200">
-             Log In
+            <Link to="/login" className="  ">
+              <Button label="LogIn"  icon={<LogIn size={16} />} />
             </Link>
 
 

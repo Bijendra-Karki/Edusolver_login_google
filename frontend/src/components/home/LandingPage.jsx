@@ -98,7 +98,7 @@ export default function LandingPage() {
         </section>
 
         {/* subscription Section */}
-        <section className="bg-gradient-to-r from-blue-500 to-blue-900 rounded-2xl p-12 text-center text-white">
+        <section className="bg-blue-900 rounded-2xl p-12 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">
             Ready to Transform You in Expert?
           </h2>

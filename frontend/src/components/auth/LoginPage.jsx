@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { Eye, EyeOff, User, Mail, Lock, CheckCircle, ArrowLeft, Sparkles, Shield, X } from "lucide-react"
-import boyCharacter from "../../assets/Img/boy.gif"
+import { useNavigate } from "react-router-dom"
+import boyCharacter from "../../assets/img/boy.gif"
 import "./LoginPage.css"
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [isSignUp, setIsSignUp] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -82,7 +84,64 @@ export default function LoginPage() {
     return true
   }
 
-  const handleSubmit = (e) => {
+  // Mock authentication function
+  const authenticateUser = async (credentials, isSignUp) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (isSignUp) {
+          resolve({
+            success: true,
+            user: {
+              id: Date.now(),
+              name: credentials.fullName,
+              email: credentials.email,
+              role: "user",
+            },
+          })
+        } else {
+          if (credentials.username === "admin" && credentials.password === "admin123") {
+            resolve({
+              success: true,
+              user: {
+                id: 1,
+                name: "Admin User",
+                email: "admin@edusolver.com",
+                role: "admin",
+              },
+            })
+          } else if (credentials.username === "expert" && credentials.password === "expert123") {
+            resolve({
+              success: true,
+              user: {
+                id: 3,
+                name: "Subject Expert",
+                email: "expert@edusolver.com",
+                role: "expert",
+                expertise: ["Mathematics", "Physics"],
+              },
+            })
+          } else if (credentials.username === "user" && credentials.password === "user123") {
+            resolve({
+              success: true,
+              user: {
+                id: 2,
+                name: "Students",
+                email: "user@edusolver.com",
+                role: "Student",
+              },
+            })
+          } else {
+            resolve({
+              success: false,
+              error: "Invalid credentials",
+            })
+          }
+        }
+      }, 2000)
+    })
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
@@ -94,20 +153,62 @@ export default function LoginPage() {
       return
     }
 
-    setTimeout(() => {
+    try {
+      const credentials = isSignUp ? signUpData : signInData
+      const result = await authenticateUser(credentials, isSignUp)
+
+      if (result.success) {
+        setSuccess(`${isSignUp ? "Account created" : "Login"} successful! Redirecting...`)
+        localStorage.setItem("user", JSON.stringify(result.user))
+
+        setTimeout(() => {
+          if (result.user.role === "admin") {
+            navigate("/adminPanel")
+          } else if (result.user.role === "expert") {
+            navigate("/expertPanel")
+          } else if (result.user.role === "Student") {
+            navigate("/clientPanel")
+          } else {
+            navigate("/")
+          }
+        }, 1500)
+      } else {
+        setError(result.error || "Authentication failed")
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.")
+    } finally {
       setIsLoading(false)
-      setSuccess(`${isSignUp ? "Account created" : "Login"} successful! Redirecting...`)
-    }, 2000)
+    }
   }
 
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
     setIsLoading(true)
     setError("")
 
-    setTimeout(() => {
+    try {
+      setTimeout(() => {
+        const mockGoogleUser = {
+          id: Date.now(),
+          name: "Google User",
+          email: "googleuser@gmail.com",
+          role: "user",
+        }
+
+        localStorage.setItem("user", JSON.stringify(mockGoogleUser))
+        setSuccess(`Google ${isSignUp ? "sign-up" : "sign-in"} successful! Redirecting...`)
+
+        setTimeout(() => {
+          alert("Google authentication unsuccessful! Redirecting to Landing Page...")
+          navigate("/")
+
+        }, 1500)
+      }, 1500)
+    } catch (error) {
+      setError("Google authentication failed")
+    } finally {
       setIsLoading(false)
-      setSuccess(`Google ${isSignUp ? "sign-up" : "sign-in"} successful! Redirecting...`)
-    }, 1500)
+    }
   }
 
   const switchToSignIn = () => {
@@ -135,8 +236,8 @@ export default function LoginPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 via-purple-600 to-blue-900">
-        <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="w-8 h-8 border-4 border-blue-600/30 border-t-blue-600 rounded-full animate-spin"></div>
       </div>
     )
   }
@@ -179,21 +280,24 @@ export default function LoginPage() {
   ]
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-500 to-purple-500 relative overflow-hidden">
+      {/* Demo Credentials Info */}
+      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm border border-blue-100 rounded-lg p-3 text-gray-700 text-xs shadow-sm">
+        <div className="font-semibold mb-1 text-blue-700">Demo Credentials:</div>
+        <div>Admin: admin / admin123</div>
+        <div>Expert: expert / expert123</div>
+        <div>User: user / user123</div>
       </div>
 
       {/* Mobile-only form container */}
-      <div className="md:hidden flex bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden max-w-md w-full min-h-[600px] relative shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_16px_rgba(0,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.05)]">
-        {/* Mobile form content */}
+      <div className="md:hidden flex bg-white/90 backdrop-blur-sm border border-blue-100 rounded-2xl overflow-hidden max-w-md w-full min-h-[600px] relative shadow-lg">
         <div className="w-full p-6 flex flex-col relative overflow-hidden">
           {/* Close button */}
           <div className="flex justify-end items-center mb-6 relative z-20 flex-shrink-0">
-            <button className="text-white/70 hover:text-white transform hover:scale-125 transition-all duration-300 hover:rotate-90 p-1 rounded-full hover:bg-white/10">
+            <button
+              onClick={() => navigate("/")}
+              className="text-gray-500 hover:text-gray-700 transform hover:scale-110 transition-all duration-300 p-1 rounded-full hover:bg-gray-100"
+            >
               <X size={24} />
             </button>
           </div>
@@ -208,31 +312,31 @@ export default function LoginPage() {
                   : "translate-x-full opacity-0 scale-95 pointer-events-none"
               } ${isTransitioning ? "blur-sm" : ""}`}
             >
-              <div className="h-full overflow-y-auto custom-scrollbar">
+              <div className="h-full overflow-y-auto">
                 <div className="flex flex-col justify-start w-full py-4 px-2">
                   {/* Header */}
                   <div className="text-center mb-6 flex-shrink-0">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Sparkles className="w-6 h-6 text-yellow-400 animate-pulse" />
-                      <h1 className="text-3xl font-bold text-white">
-                        Join Edu<span className="text-blue-400">Solver</span>
+                      <Sparkles className="w-6 h-6 text-blue-600 animate-pulse" />
+                      <h1 className="text-3xl font-bold text-gray-800">
+                        Join Edu<span className="text-blue-600">Solver</span>
                       </h1>
-                      <Sparkles className="w-6 h-6 text-yellow-400 animate-pulse delay-300" />
+                      <Sparkles className="w-6 h-6 text-blue-600 animate-pulse delay-300" />
                     </div>
-                    <p className="text-white/70 text-sm">Create your account and start learning</p>
+                    <p className="text-gray-600 text-sm">Create your account and start learning</p>
                   </div>
 
                   {/* Messages */}
                   {error && isSignUp && (
-                    <div className="mb-4 p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-200 rounded-xl text-sm animate-in slide-in-from-top-2 duration-300 flex items-center gap-2 flex-shrink-0">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse flex-shrink-0"></div>
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
                       <span className="break-words">{error}</span>
                     </div>
                   )}
 
                   {success && isSignUp && (
-                    <div className="mb-4 p-3 bg-green-500/20 backdrop-blur-sm border border-green-400/30 text-green-200 rounded-xl text-sm flex items-center gap-2 animate-in slide-in-from-top-2 duration-300 flex-shrink-0">
-                      <CheckCircle size={16} className="animate-pulse flex-shrink-0" />
+                    <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <CheckCircle size={16} className="flex-shrink-0" />
                       <span className="break-words">{success}</span>
                     </div>
                   )}
@@ -241,7 +345,7 @@ export default function LoginPage() {
                     {/* Input Fields */}
                     {inputFields.map((field, index) => (
                       <div key={field.name} className="relative group/input">
-                        <field.icon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/50 w-5 h-5 transition-all duration-300 group-focus-within/input:text-white/70 group-focus-within/input:scale-110 z-10" />
+                        <field.icon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-all duration-300 group-focus-within/input:text-blue-600 z-10" />
                         <input
                           type={field.type}
                           name={field.name}
@@ -249,14 +353,14 @@ export default function LoginPage() {
                           value={field.value}
                           onChange={handleSignUpChange}
                           disabled={isLoading}
-                          className="w-full pl-12 pr-12 py-4 border-2 border-white/20 rounded-xl text-white bg-white/10 backdrop-blur-sm transition-all duration-300 outline-none text-base focus:border-white/40 focus:bg-white/20 focus:ring-4 focus:ring-white/10 focus:scale-[1.02] placeholder-white/50 disabled:opacity-50 disabled:cursor-not-allowed hover:border-white/30 hover:bg-white/15 hover:shadow-lg relative z-0"
+                          className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl text-gray-800 bg-white transition-all duration-300 outline-none text-base focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-300 relative z-0"
                         />
                         {field.hasToggle && (
                           <button
                             type="button"
                             onClick={field.toggle}
                             disabled={isLoading}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:bg-white/10 z-10"
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed z-10"
                           >
                             {field.showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                           </button>
@@ -268,7 +372,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-green-500/80 to-emerald-600/80 backdrop-blur-sm text-white border-none py-4 rounded-xl text-base font-semibold cursor-pointer transition-all duration-500 shadow-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(34,197,94,0.3)] hover:from-green-500 hover:to-emerald-600 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0 before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white border-none py-4 rounded-xl text-base font-semibold cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -277,7 +381,7 @@ export default function LoginPage() {
                         </div>
                       ) : (
                         <>
-                          <Sparkles className="w-5 h-5 mr-2 animate-pulse" />
+                          <Sparkles className="w-5 h-5 mr-2" />
                           Create Account
                         </>
                       )}
@@ -289,7 +393,7 @@ export default function LoginPage() {
                     <button
                       onClick={switchToSignIn}
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-blue-500/80 to-indigo-600/80 backdrop-blur-sm text-white border-none py-4 rounded-xl text-base font-semibold cursor-pointer transition-all duration-500 shadow-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(59,130,246,0.3)] hover:from-blue-500 hover:to-indigo-600 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0 before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                      className="w-full bg-white text-blue-600 border-2 border-blue-200 py-4 rounded-xl text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-blue-50 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       Already have an account? Sign In
                     </button>
@@ -297,10 +401,10 @@ export default function LoginPage() {
 
                   {/* Social Section */}
                   <div className="mt-4 flex-shrink-0">
-                    <p className="text-center text-white/70 text-sm mb-4 relative">
-                      <span className="bg-transparent px-4 relative z-10">Or sign up with</span>
+                    <p className="text-center text-gray-500 text-sm mb-4 relative">
+                      <span className="bg-white px-4 relative z-10">Or sign up with</span>
                       <span className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-white/20"></span>
+                        <span className="w-full border-t border-gray-200"></span>
                       </span>
                     </p>
                     <div className="flex gap-4 justify-center">
@@ -308,10 +412,9 @@ export default function LoginPage() {
                         onClick={handleGoogleAuth}
                         disabled={isLoading}
                         title="Sign up with Google"
-                        className="w-14 h-14 border-2 border-white/20 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:border-white/30 hover:-translate-y-1 hover:shadow-lg hover:bg-white/20 hover:scale-110 hover:rotate-3 active:scale-95 active:rotate-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group/social"
+                        className="w-14 h-14 border-2 border-gray-200 rounded-xl bg-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover/social:translate-x-[100%] transition-transform duration-700"></div>
-                        <svg width="20" height="20" viewBox="0 0 24 24" className="relative z-10">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
                           <path
                             fill="#4285F4"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -344,15 +447,15 @@ export default function LoginPage() {
                   : "-translate-x-full opacity-0 scale-95 pointer-events-none"
               } ${isTransitioning ? "blur-sm" : ""}`}
             >
-              <div className="h-full overflow-y-auto custom-scrollbar">
+              <div className="h-full overflow-y-auto">
                 <div className="flex flex-col justify-start w-full py-4 px-2">
                   {/* Back Button */}
                   <div className="mb-4 flex-shrink-0">
                     <button
                       onClick={switchToSignUp}
-                      className="text-white/70 hover:text-white text-sm transition-all duration-300 hover:scale-105 flex items-center gap-2 group/back"
+                      className="text-gray-500 hover:text-gray-700 text-sm transition-all duration-300 flex items-center gap-2"
                     >
-                      <ArrowLeft size={16} className="transition-transform group-hover/back:-translate-x-1" />
+                      <ArrowLeft size={16} />
                       Back to Sign Up
                     </button>
                   </div>
@@ -360,25 +463,25 @@ export default function LoginPage() {
                   {/* Header */}
                   <div className="text-center mb-6 flex-shrink-0">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Shield className="w-6 h-6 text-blue-400 animate-pulse" />
-                      <h1 className="text-3xl font-bold text-white">
-                        Welcome Back to Edu<span className="text-blue-400">Solver</span>
+                      <Shield className="w-6 h-6 text-blue-600" />
+                      <h1 className="text-3xl font-bold text-gray-800">
+                        Welcome Back to Edu<span className="text-blue-600">Solver</span>
                       </h1>
                     </div>
-                    <p className="text-white/70 text-sm">Sign in to continue your learning journey</p>
+                    <p className="text-gray-600 text-sm">Sign in to continue your learning journey</p>
                   </div>
 
                   {/* Messages */}
                   {error && !isSignUp && (
-                    <div className="mb-4 p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-200 rounded-xl text-sm animate-in slide-in-from-top-2 duration-300 flex items-center gap-2 flex-shrink-0">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse flex-shrink-0"></div>
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
                       <span className="break-words">{error}</span>
                     </div>
                   )}
 
                   {success && !isSignUp && (
-                    <div className="mb-4 p-3 bg-green-500/20 backdrop-blur-sm border border-green-400/30 text-green-200 rounded-xl text-sm flex items-center gap-2 animate-in slide-in-from-top-2 duration-300 flex-shrink-0">
-                      <CheckCircle size={16} className="animate-pulse flex-shrink-0" />
+                    <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <CheckCircle size={16} className="flex-shrink-0" />
                       <span className="break-words">{success}</span>
                     </div>
                   )}
@@ -393,7 +496,7 @@ export default function LoginPage() {
                         value={signInData.username}
                         onChange={handleSignInChange}
                         disabled={isLoading}
-                        className="w-full px-5 py-4 border-2 border-white/20 rounded-xl text-white bg-white/10 backdrop-blur-sm transition-all duration-300 outline-none text-base focus:border-white/40 focus:bg-white/20 focus:ring-4 focus:ring-white/10 focus:scale-[1.02] placeholder-white/50 disabled:opacity-50 disabled:cursor-not-allowed hover:border-white/30 hover:bg-white/15 hover:shadow-lg"
+                        className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl text-gray-800 bg-white transition-all duration-300 outline-none text-base focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-300"
                       />
                     </div>
 
@@ -405,13 +508,13 @@ export default function LoginPage() {
                         value={signInData.password}
                         onChange={handleSignInChange}
                         disabled={isLoading}
-                        className="w-full px-5 py-4 pr-12 border-2 border-white/20 rounded-xl text-white bg-white/10 backdrop-blur-sm transition-all duration-300 outline-none text-base focus:border-white/40 focus:bg-white/20 focus:ring-4 focus:ring-white/10 focus:scale-[1.02] placeholder-white/50 disabled:opacity-50 disabled:cursor-not-allowed hover:border-white/30 hover:bg-white/15 hover:shadow-lg"
+                        className="w-full px-5 py-4 pr-12 border-2 border-gray-200 rounded-xl text-gray-800 bg-white transition-all duration-300 outline-none text-base focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-300"
                       />
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
                         disabled={isLoading}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:bg-white/10 z-10"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed z-10"
                       >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -420,7 +523,7 @@ export default function LoginPage() {
                     <div className="flex justify-end -mt-1 mb-2 flex-shrink-0">
                       <button
                         type="button"
-                        className="text-white/70 text-sm hover:text-white transition-all duration-300 hover:scale-105 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
+                        className="text-blue-600 text-sm hover:text-blue-700 transition-all duration-300"
                       >
                         Recovery Password
                       </button>
@@ -430,7 +533,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-blue-500/80 to-indigo-600/80 backdrop-blur-sm text-white border-none py-4 rounded-xl text-base font-semibold cursor-pointer transition-all duration-500 shadow-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(59,130,246,0.3)] hover:from-blue-500 hover:to-indigo-600 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0 before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white border-none py-4 rounded-xl text-base font-semibold cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -448,10 +551,10 @@ export default function LoginPage() {
 
                   {/* Social Section */}
                   <div className="mt-6 flex-shrink-0">
-                    <p className="text-center text-white/70 text-sm mb-4 relative">
-                      <span className="bg-transparent px-4 relative z-10">Or continue with</span>
+                    <p className="text-center text-gray-500 text-sm mb-4 relative">
+                      <span className="bg-white px-4 relative z-10">Or continue with</span>
                       <span className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-white/20"></span>
+                        <span className="w-full border-t border-gray-200"></span>
                       </span>
                     </p>
                     <div className="flex gap-4 justify-center">
@@ -459,10 +562,9 @@ export default function LoginPage() {
                         onClick={handleGoogleAuth}
                         disabled={isLoading}
                         title="Sign in with Google"
-                        className="w-14 h-14 border-2 border-white/20 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:border-white/30 hover:-translate-y-1 hover:shadow-lg hover:bg-white/20 hover:scale-110 hover:rotate-3 active:scale-95 active:rotate-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group/social"
+                        className="w-14 h-14 border-2 border-gray-200 rounded-xl bg-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover/social:translate-x-[100%] transition-transform duration-700"></div>
-                        <svg width="20" height="20" viewBox="0 0 24 24" className="relative z-10">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
                           <path
                             fill="#4285F4"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -490,20 +592,15 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="flex bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden max-w-5xl w-full h-[550px] relative group shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_16px_rgba(0,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_32px_64px_rgba(0,0,0,0.25),0_16px_32px_rgba(0,0,0,0.15),0_0_0_1px_rgba(255,255,255,0.1)] transform transition-all duration-1000 ease-out hover:scale-[1.01] hover:-translate-y-1 md:flex hidden">
+      {/* Desktop Layout */}
+      <div className="flex bg-blue-100 backdrop-blur-sm border border-blue-100 rounded-2xl overflow-hidden max-w-5xl w-full h-[550px] relative shadow-lg transform transition-all duration-300 hover:shadow-xl md:flex hidden">
         {/* Left side with illustration */}
-        <div className="hidden md:flex flex-1 bg-gradient-to-br from-purple-500/20 via-purple-600/15 to-blue-900/20 backdrop-blur-sm items-center justify-center p-6 relative overflow-hidden">
-          {/* Floating Elements */}
-          <div className="absolute top-8 left-8 w-2 h-2 bg-white/30 rounded-full animate-ping"></div>
-          <div className="absolute top-12 right-12 w-1 h-1 bg-blue-300/50 rounded-full animate-pulse delay-300"></div>
-          <div className="absolute bottom-10 left-12 w-1.5 h-1.5 bg-purple-300/40 rounded-full animate-pulse delay-700"></div>
-
-          <div className="flex items-center justify-center w-full h-full transform scale-110 transition-transform duration-1000 group-hover:scale-115 relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-500/10 to-transparent rounded-full blur-2xl"></div>
+        <div className="hidden md:flex flex-1 bg-gradient-to-br from-blue-300 to-indigo-100 items-center justify-center p-6 relative overflow-hidden">
+          <div className="flex items-center justify-center w-full h-full relative top-30 scale-120">
             <img
-              src={boyCharacter || "/placeholder.svg"}
+              src={boyCharacter || "/placeholder.svg?height=300&width=300"}
               alt="EduSolver Character"
-              className="max-w-full max-h-full object-contain drop-shadow-2xl transition-all duration-1000 group-hover:drop-shadow-[0_25px_50px_rgba(0,0,0,0.4)] relative z-10"
+              className="max-w-full max-h-full object-contain drop-shadow-lg"
               style={{ width: "300px", height: "300px" }}
             />
           </div>
@@ -513,12 +610,16 @@ export default function LoginPage() {
         <div className="flex-1 w-full p-6 flex flex-col relative overflow-hidden">
           {/* Close button */}
           <div className="flex justify-end items-center mb-4 relative z-20 flex-shrink-0">
-            <button className="text-white/70 hover:text-white transform hover:scale-125 transition-all duration-300 hover:rotate-90 p-1 rounded-full hover:bg-white/10">
+            
+            <button
+              onClick={() => navigate("/")}
+              className="text-gray-500 hover:text-gray-700 transform hover:scale-110 transition-all duration-300 p-1 rounded-full hover:bg-gray-100"
+            >
               <X size={24} />
             </button>
           </div>
 
-          {/* Forms Container with Enhanced Animation - Scrollable */}
+          {/* Forms Container */}
           <div className="relative w-full flex-1 overflow-hidden">
             {/* Sign-Up Form */}
             <div
@@ -528,31 +629,31 @@ export default function LoginPage() {
                   : "translate-x-full opacity-0 scale-95 pointer-events-none"
               } ${isTransitioning ? "blur-sm" : ""}`}
             >
-              <div className="h-full overflow-y-auto custom-scrollbar">
+              <div className="h-full overflow-y-auto">
                 <div className="flex flex-col justify-start max-w-sm mx-auto w-full py-3 px-2">
                   {/* Header */}
                   <div className="text-center mb-4 flex-shrink-0">
                     <div className="flex items-center justify-center gap-2 mb-1">
-                      <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
-                      <h1 className="text-2xl font-bold text-white">
-                        Join Edu<span className="text-blue-400">Solver</span>
+                      <Sparkles className="w-5 h-5 text-blue-600" />
+                      <h1 className="text-2xl font-bold text-blue-900">
+                        Join Edu<span className=" font-bold bg-gradient-to-r from-blue-900 to-purple-900 bg-clip-text text-transparent">Solver</span>
                       </h1>
-                      <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse delay-300" />
+                      <Sparkles className="w-5 h-5 text-blue-600" />
                     </div>
-                    <p className="text-white/70 text-xs">Create your account and start learning</p>
+                    <p className="text-gray-600 text-xs">Create your account and start learning</p>
                   </div>
 
                   {/* Messages */}
                   {error && isSignUp && (
-                    <div className="mb-4 p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-200 rounded-xl text-sm animate-in slide-in-from-top-2 duration-300 flex items-center gap-2 flex-shrink-0">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse flex-shrink-0"></div>
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
                       <span className="break-words">{error}</span>
                     </div>
                   )}
 
                   {success && isSignUp && (
-                    <div className="mb-4 p-3 bg-green-500/20 backdrop-blur-sm border border-green-400/30 text-green-200 rounded-xl text-sm flex items-center gap-2 animate-in slide-in-from-top-2 duration-300 flex-shrink-0">
-                      <CheckCircle size={16} className="animate-pulse flex-shrink-0" />
+                    <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <CheckCircle size={16} className="flex-shrink-0" />
                       <span className="break-words">{success}</span>
                     </div>
                   )}
@@ -561,7 +662,7 @@ export default function LoginPage() {
                     {/* Input Fields */}
                     {inputFields.map((field, index) => (
                       <div key={field.name} className="relative group/input">
-                        <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4 transition-all duration-300 group-focus-within/input:text-white/70 group-focus-within/input:scale-110 z-10" />
+                        <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 transition-all duration-300 group-focus-within/input:text-blue-600 z-10" />
                         <input
                           type={field.type}
                           name={field.name}
@@ -569,14 +670,14 @@ export default function LoginPage() {
                           value={field.value}
                           onChange={handleSignUpChange}
                           disabled={isLoading}
-                          className="w-full pl-10 pr-10 py-3 border-2 border-white/20 rounded-xl text-white bg-white/10 backdrop-blur-sm transition-all duration-300 outline-none text-sm focus:border-white/40 focus:bg-white/20 focus:ring-4 focus:ring-white/10 focus:scale-[1.02] placeholder-white/50 disabled:opacity-50 disabled:cursor-not-allowed hover:border-white/30 hover:bg-white/15 hover:shadow-lg relative z-0"
+                          className="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl text-gray-800 bg-white transition-all duration-300 outline-none text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-300 relative z-0"
                         />
                         {field.hasToggle && (
                           <button
                             type="button"
                             onClick={field.toggle}
                             disabled={isLoading}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:bg-white/10 z-10"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed z-10"
                           >
                             {field.showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                           </button>
@@ -588,7 +689,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-green-500/80 to-emerald-600/80 backdrop-blur-sm text-white border-none py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-500 shadow-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(34,197,94,0.3)] hover:from-green-500 hover:to-emerald-600 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0 before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white border-none py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -597,7 +698,7 @@ export default function LoginPage() {
                         </div>
                       ) : (
                         <>
-                          <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                          <Sparkles className="w-4 h-4 mr-2" />
                           Create Account
                         </>
                       )}
@@ -609,7 +710,7 @@ export default function LoginPage() {
                     <button
                       onClick={switchToSignIn}
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-blue-500/80 to-indigo-600/80 backdrop-blur-sm text-white border-none py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-500 shadow-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(59,130,246,0.3)] hover:from-blue-500 hover:to-indigo-600 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0 before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                      className="w-full bg-white text-blue-600 border-2 border-blue-200 py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300 hover:bg-blue-50 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       Already have an account? Sign In
                     </button>
@@ -617,10 +718,10 @@ export default function LoginPage() {
 
                   {/* Social Section */}
                   <div className="mt-3 flex-shrink-0">
-                    <p className="text-center text-white/70 text-xs mb-3 relative">
-                      <span className="bg-transparent px-4 relative z-10">Or sign up with</span>
+                    <p className="text-center text-gray-500 text-xs mb-3 relative">
+                      <span className="bg-white px-4 relative z-10">Or sign up with</span>
                       <span className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-white/20"></span>
+                        <span className="w-full border-t border-gray-200"></span>
                       </span>
                     </p>
                     <div className="flex gap-4 justify-center">
@@ -628,10 +729,9 @@ export default function LoginPage() {
                         onClick={handleGoogleAuth}
                         disabled={isLoading}
                         title="Sign up with Google"
-                        className="w-12 h-12 border-2 border-white/20 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:border-white/30 hover:-translate-y-1 hover:shadow-lg hover:bg-white/20 hover:scale-110 hover:rotate-3 active:scale-95 active:rotate-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group/social"
+                        className="w-12 h-12 border-2 border-gray-200 rounded-xl bg-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover/social:translate-x-[100%] transition-transform duration-700"></div>
-                        <svg width="18" height="18" viewBox="0 0 24 24" className="relative z-10">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
                           <path
                             fill="#4285F4"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -664,15 +764,15 @@ export default function LoginPage() {
                   : "-translate-x-full opacity-0 scale-95 pointer-events-none"
               } ${isTransitioning ? "blur-sm" : ""}`}
             >
-              <div className="h-full overflow-y-auto custom-scrollbar">
+              <div className="h-full overflow-y-auto">
                 <div className="flex flex-col justify-start max-w-sm mx-auto w-full py-3 px-2">
                   {/* Back Button */}
                   <div className="mb-4 flex-shrink-0">
                     <button
                       onClick={switchToSignUp}
-                      className="text-white/70 hover:text-white text-sm transition-all duration-300 hover:scale-105 flex items-center gap-2 group/back"
+                      className="text-gray-500 hover:text-gray-700 text-sm transition-all duration-300 flex items-center gap-2"
                     >
-                      <ArrowLeft size={16} className="transition-transform group-hover/back:-translate-x-1" />
+                      <ArrowLeft size={16} />
                       Back to Sign Up
                     </button>
                   </div>
@@ -680,25 +780,25 @@ export default function LoginPage() {
                   {/* Header */}
                   <div className="text-center mb-4 flex-shrink-0">
                     <div className="flex items-center justify-center gap-2 mb-1">
-                      <Shield className="w-5 h-5 text-blue-400 animate-pulse" />
-                      <h1 className="text-2xl font-bold text-white">
-                        Welcome Back to Edu<span className="text-blue-400">Solver</span>
+                      <Shield className="w-5 h-5 text-blue-600" />
+                      <h1 className="text-2xl font-bold text-gray-800">
+                        Welcome Back to Edu<span className="text-blue-600">Solver</span>
                       </h1>
                     </div>
-                    <p className="text-white/70 text-xs">Sign in to continue your learning journey</p>
+                    <p className="text-gray-600 text-xs">Sign in to continue your learning journey</p>
                   </div>
 
                   {/* Messages */}
                   {error && !isSignUp && (
-                    <div className="mb-4 p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-200 rounded-xl text-sm animate-in slide-in-from-top-2 duration-300 flex items-center gap-2 flex-shrink-0">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse flex-shrink-0"></div>
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
                       <span className="break-words">{error}</span>
                     </div>
                   )}
 
                   {success && !isSignUp && (
-                    <div className="mb-4 p-3 bg-green-500/20 backdrop-blur-sm border border-green-400/30 text-green-200 rounded-xl text-sm flex items-center gap-2 animate-in slide-in-from-top-2 duration-300 flex-shrink-0">
-                      <CheckCircle size={16} className="animate-pulse flex-shrink-0" />
+                    <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm flex items-center gap-2 flex-shrink-0">
+                      <CheckCircle size={16} className="flex-shrink-0" />
                       <span className="break-words">{success}</span>
                     </div>
                   )}
@@ -713,7 +813,7 @@ export default function LoginPage() {
                         value={signInData.username}
                         onChange={handleSignInChange}
                         disabled={isLoading}
-                        className="w-full px-4 py-3 border-2 border-white/20 rounded-xl text-white bg-white/10 backdrop-blur-sm transition-all duration-300 outline-none text-sm focus:border-white/40 focus:bg-white/20 focus:ring-4 focus:ring-white/10 focus:scale-[1.02] placeholder-white/50 disabled:opacity-50 disabled:cursor-not-allowed hover:border-white/30 hover:bg-white/15 hover:shadow-lg"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 bg-white transition-all duration-300 outline-none text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-300"
                       />
                     </div>
 
@@ -725,13 +825,13 @@ export default function LoginPage() {
                         value={signInData.password}
                         onChange={handleSignInChange}
                         disabled={isLoading}
-                        className="w-full px-4 py-3 pr-10 border-2 border-white/20 rounded-xl text-white bg-white/10 backdrop-blur-sm transition-all duration-300 outline-none text-sm focus:border-white/40 focus:bg-white/20 focus:ring-4 focus:ring-white/10 focus:scale-[1.02] placeholder-white/50 disabled:opacity-50 disabled:cursor-not-allowed hover:border-white/30 hover:bg-white/15 hover:shadow-lg"
+                        className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl text-gray-800 bg-white transition-all duration-300 outline-none text-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:border-gray-300"
                       />
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
                         disabled={isLoading}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:bg-white/10 z-10"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed z-10"
                       >
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
@@ -740,7 +840,7 @@ export default function LoginPage() {
                     <div className="flex justify-end -mt-1 mb-2 flex-shrink-0">
                       <button
                         type="button"
-                        className="text-white/70 text-sm hover:text-white transition-all duration-300 hover:scale-105 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
+                        className="text-blue-600 text-sm hover:text-blue-700 transition-all duration-300"
                       >
                         Recovery Password
                       </button>
@@ -750,7 +850,7 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-blue-500/80 to-indigo-600/80 backdrop-blur-sm text-white border-none py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-500 shadow-lg hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(59,130,246,0.3)] hover:from-blue-500 hover:to-indigo-600 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/20 before:to-white/0 before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white border-none py-3 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -768,10 +868,10 @@ export default function LoginPage() {
 
                   {/* Social Section */}
                   <div className="mt-3 flex-shrink-0">
-                    <p className="text-center text-white/70 text-xs mb-3 relative">
-                      <span className="bg-transparent px-4 relative z-10">Or continue with</span>
+                    <p className="text-center text-gray-500 text-xs mb-3 relative">
+                      <span className="bg-white px-4 relative z-10">Or continue with</span>
                       <span className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-white/20"></span>
+                        <span className="w-full border-t border-gray-200"></span>
                       </span>
                     </p>
                     <div className="flex gap-4 justify-center">
@@ -779,10 +879,9 @@ export default function LoginPage() {
                         onClick={handleGoogleAuth}
                         disabled={isLoading}
                         title="Sign in with Google"
-                        className="w-12 h-12 border-2 border-white/20 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center cursor-pointer transition-all duration-500 hover:border-white/30 hover:-translate-y-1 hover:shadow-lg hover:bg-white/20 hover:scale-110 hover:rotate-3 active:scale-95 active:rotate-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group/social"
+                        className="w-12 h-12 border-2 border-gray-200 rounded-xl bg-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover/social:translate-x-[100%] transition-transform duration-700"></div>
-                        <svg width="18" height="18" viewBox="0 0 24 24" className="relative z-10">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
                           <path
                             fill="#4285F4"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

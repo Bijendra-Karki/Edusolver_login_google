@@ -2,7 +2,7 @@ import { ArrowRight, Phone, Mail } from "lucide-react"
 
 export function CTASection() {
   return (
-    <section className="py-24  px-12 bg-gradient-to-r from-blue-600 to-blue-900 text-white mb-6 rounded-t-2xl shadow-lg">
+    <section className="py-24  px-12 bg-blue-900 text-white mb-6 rounded-t-2xl shadow-lg">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>

@@ -9,7 +9,9 @@ import MainAbout from "./components/about/MainAbout"
 import Service from "./components/service/Service"
 import ContactPage from "./components/Contact/ContactPage"
 import LoginPage from "./components/auth/LoginPage"
-import Dashboard from "./client/Dashboard"
+
+import ExpertPanel from "./Export/ExpertPanel"
+import ClientPanel from "./client/ClientPanel"
 import AdminPanel from "./Admin/AdminPanel"
 
 function App() {
@@ -27,8 +29,9 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/google-login" element={<GoogleAuthWrapper />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path="/adminPanel" element={<AdminPanel/>} />
+        <Route path="/clientPanel" element={<ClientPanel/>} />
+        <Route path="/adminPanel" element={<AdminPanel />} />
+        <Route path="/expertPanel" element={<ExpertPanel />} />
         <Route path="/about" element={<MainAbout />} />
         <Route path="/service" element={<Service />} />
         <Route path="/contact" element={<ContactPage />} />

@@ -1,185 +1,148 @@
+"use client"
 
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { Users, BookOpen, Settings, BarChart3, Shield, LogOut } from "lucide-react"
+import { Users, BookOpen, BarChart3, Settings, LogOut, Shield } from "lucide-react"
+import Logo2 from "../assets/Img/Logo2.png"; 
+import Button from "../components/button";
 
-const AdminPanel = () => {
+
+export default function AdminPanel() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    // Check if user is authenticated and is admin
     const userData = localStorage.getItem("user")
-    const isAuthenticated = localStorage.getItem("isAuthenticated")
-
-    if (!isAuthenticated || !userData) {
+    if (userData) {
+      const parsedUser = JSON.parse(userData)
+      if (parsedUser.role !== "admin") {
+        navigate("/")
+        return
+      }
+      setUser(parsedUser)
+    } else {
       navigate("/login")
-      return
     }
-
-    const parsedUser = JSON.parse(userData)
-
-    // Check if user has admin role
-    if (parsedUser.role !== "admin") {
-      alert("Access denied! Admin privileges required.")
-      navigate("/dashboard") // Redirect non-admin users to client dashboard
-      return
-    }
-
-    setUser(parsedUser)
   }, [navigate])
 
   const handleLogout = () => {
     localStorage.removeItem("user")
-    localStorage.removeItem("isAuthenticated")
     navigate("/login")
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Admin Panel...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="w-8 h-8 border-4 border-blue-600/30 border-t-blue-600 rounded-full animate-spin"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Admin Header */}
-      <header className="bg-blue-900 text-white shadow-lg">
+    <div className="min-h-screen  bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-blue-700 to-blue-900 backdrop-blur-sm border-b border-blue-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Shield className="w-8 h-8 mr-3" />
-              <h1 className="text-2xl font-bold">EduSolver Admin Panel</h1>
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center gap-3">
+
+              <div className="flex items-center space-x-2">
+                <img src={Logo2} alt="EduSolver Logo" className="w-16 h-16 rounded-full object-cover" />
+                <span className="text-2xl font-bold text-white">EduSolver</span>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-blue-100">Welcome, {user.name}</span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </button>
+            
+            <div className="flex items-center gap-4">
+              <span className="text-white">Welcome, {user.name}</span>
+              
+              <Button label="Logout" onClick={handleLogout} icon={<LogOut size={16} />} />
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Admin Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="flex items-center">
-              <Users className="w-8 h-8 text-blue-600 mr-3" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Stats Cards */}
+          <div className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                <Users className="w-6 h-6 text-blue-600" />
+              </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Total Users</h3>
-                <p className="text-2xl font-bold text-blue-600">1,234</p>
+                <p className="text-gray-600 text-sm">Total Users</p>
+                <p className="text-2xl font-bold text-gray-800">1,234</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="flex items-center">
-              <BookOpen className="w-8 h-8 text-green-600 mr-3" />
+          <div className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-green-600" />
+              </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Courses</h3>
-                <p className="text-2xl font-bold text-green-600">89</p>
+                <p className="text-gray-600 text-sm">Active Courses</p>
+                <p className="text-2xl font-bold text-gray-800">56</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="flex items-center">
-              <BarChart3 className="w-8 h-8 text-purple-600 mr-3" />
+          <div className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-yellow-50 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-yellow-600" />
+              </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Revenue</h3>
-                <p className="text-2xl font-bold text-purple-600">$45,678</p>
+                <p className="text-gray-600 text-sm">Completion Rate</p>
+                <p className="text-2xl font-bold text-gray-800">87%</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="flex items-center">
-              <Settings className="w-8 h-8 text-orange-600 mr-3" />
+          <div className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
+                <Settings className="w-6 h-6 text-purple-600" />
+              </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">Active Sessions</h3>
-                <p className="text-2xl font-bold text-orange-600">567</p>
+                <p className="text-gray-600 text-sm">System Status</p>
+                <p className="text-2xl font-bold text-green-600">Online</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Admin Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">User Management</h3>
-            <p className="text-gray-600 mb-4">Manage student and teacher accounts</p>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Manage Users
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Course Management</h3>
-            <p className="text-gray-600 mb-4">Add, edit, and organize courses</p>
-            <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-              Manage Courses
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Analytics</h3>
-            <p className="text-gray-600 mb-4">View detailed reports and analytics</p>
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-              View Analytics
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">System Settings</h3>
-            <p className="text-gray-600 mb-4">Configure system preferences</p>
-            <button className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
-              System Settings
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Content Moderation</h3>
-            <p className="text-gray-600 mb-4">Review and moderate user content</p>
-            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-              Moderate Content
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Support Tickets</h3>
-            <p className="text-gray-600 mb-4">Handle user support requests</p>
-            <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
-              View Tickets
-            </button>
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-gray-700">New user registration: john.doe@example.com</span>
-              <span className="text-sm text-gray-500">2 minutes ago</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">User Management</h2>
+            <div className="space-y-3">
+              <button className="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-gray-800 border border-blue-100">
+                View Students
+              </button>
+              <button className="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-gray-800 border border-blue-100">
+                View Experts
+              </button>
+              <button className="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-gray-800 border border-blue-100">
+                Subscription Management
+              </button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-gray-700">Course "Advanced Mathematics" updated</span>
-              <span className="text-sm text-gray-500">15 minutes ago</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-gray-700">Support ticket #1234 resolved</span>
-              <span className="text-sm text-gray-500">1 hour ago</span>
+          </div>
+
+          <div className="bg-white/90 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Content Management</h2>
+            <div className="space-y-3">
+              <button className="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-gray-800 border border-blue-100">
+                Manage Courses
+              </button>
+              <button className="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-gray-800 border border-blue-100">
+                Add New Course
+              </button>
+              <button className="w-full text-left p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-gray-800 border border-blue-100">
+                Content Analytics
+              </button>
             </div>
           </div>
         </div>
@@ -187,5 +150,3 @@ const AdminPanel = () => {
     </div>
   )
 }
-
-export default AdminPanel
