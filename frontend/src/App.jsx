@@ -13,6 +13,16 @@ import LoginPage from "./components/auth/LoginPage"
 import ExpertPanel from "./Export/ExpertPanel"
 import ClientPanel from "./client/ClientPanel"
 import AdminPanel from "./Admin/AdminPanel"
+import CoursesPage from "./client/Components/CoursesPage"
+import PracticePage from "./client/Components/PracticePage"
+import MaterialsPage from "./client/Components/MaterialsPage"
+import AssignmentsPage from "./client/Components/AssignmentPage"
+import StudyGroupsPage from "./client/Components/StudyGroupsPage"
+import ProjectsPage from "./client/Components/ProjectsPage"
+import Feed from "./components/feed/Feed"
+
+
+
 
 function App() {
   const GoogleAuthWrapper = () => {
@@ -36,6 +46,15 @@ function App() {
         <Route path="/service" element={<Service />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<PageNotFound />} />
+          <Route path="/" element={<CoursesPage/>} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/practice" element={<PracticePage />} />
+          <Route path="/materials" element={<MaterialsPage/>} />
+          <Route path="/assignments" element={<AssignmentsPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/study-groups" element={<StudyGroupsPage />} />
+          <Route path="/feed" element={<Feed />} />
+
       </Routes>
     </BrowserRouter>
   )
