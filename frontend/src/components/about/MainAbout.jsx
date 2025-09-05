@@ -9,12 +9,13 @@ import { BreadCrumb } from '../ToperFooter/BreadCrumb'
 import { OurMission } from './OurMission'
 import { About } from './About'  // Added missing import
 
+
 export default function MainAbout() {
   return (
     <div className="min-h-screen bg-blue-100">
-      <Navbar />
-     <BreadCrumb content="About Us" icon1={Home} icon2={ChevronRight} />
-      <About/>
+     
+      <BreadCrumb content="About Us" icon1={Home} icon2={ChevronRight} />
+      <About />
       <WhatWeDone />
       <OurMission />
       <TeamSection />

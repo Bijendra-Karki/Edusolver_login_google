@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube, PhoneCall } from "lucide-react"
-import Navbar from "../ToperFooter/Navbar"
 import { BreadCrumb } from "../ToperFooter/BreadCrumb"
 import { Home, ChevronRight } from "lucide-react"
 import Footer from "../ToperFooter/Footer"
@@ -39,7 +38,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      
       <BreadCrumb content="Contact Us" icon1={Home} icon2={ChevronRight} />
 
       <main className="container mx-auto px-4 py-16">

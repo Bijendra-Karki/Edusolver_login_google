@@ -3,14 +3,14 @@ import { Home, ChevronRight } from "lucide-react";
 import {BreadCrumb} from '../ToperFooter/BreadCrumb'; // ✅ Add this missing import
 import ServiceHowWeWork from './ServiceHowWeWork';
 import ServiceSection from './ServiceSection';
-import Navbar from '../ToperFooter/Navbar';
 import PricingSection from './PricingSection';
 import Footer from '../ToperFooter/Footer';
+
 
 function Service() {
   return (
     <>
-      <Navbar />
+     
       <BreadCrumb content="Service" icon1={Home} icon2={ChevronRight} />
       <ServiceSection />
       <ServiceHowWeWork />
